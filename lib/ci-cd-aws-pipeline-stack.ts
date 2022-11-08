@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import {CodePipeline, CodePipelineSource, ShellStep} from "aws-cdk-lib/pipelines";
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import {CodePipeline, CodePipelineSource, ManualApprovalStep, ShellStep} from "aws-cdk-lib/pipelines";
+import {MyPipelineAppStage} from "./stage";
 
 export class CiCdAwsPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -17,16 +17,16 @@ export class CiCdAwsPipelineStack extends cdk.Stack {
       })
     });
 
-  //   const testingStage = pipeline.addStage(new MyPipelineAppStage(this, "test", {
-  //     env: { account: "755314965794", region: "us-east-1" }
-  //   }));
-  //
-  //
-  //   testingStage.addPre(new ShellStep("Run Unit Tests", { commands: ['npm install', 'npm test'] }));
-  //   testingStage.addPost(new ManualApprovalStep('Manual approval before production'));
-  //
-  //   const prodStage = pipeline.addStage(new MyPipelineAppStage(this, "prod", {
-  //     env: { account: "755314965794", region: "us-east-1" }
-  //   }));
+    const testingStage = pipeline.addStage(new MyPipelineAppStage(this, "test", {
+      env: { account: "824731037889", region: "eu-central-1" }
+    }));
+
+
+    testingStage.addPre(new ShellStep("Run Unit Tests", { commands: ['npm install', 'npm test'] }));
+    testingStage.addPost(new ManualApprovalStep('Manual approval before production'));
+
+    const prodStage = pipeline.addStage(new MyPipelineAppStage(this, "prod", {
+      env: { account: "824731037889", region: "eu-central-1" }
+    }));
   }
 }
